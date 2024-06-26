@@ -50,4 +50,4 @@ This Python script provides functionalities to encrypt files on a USB drive usin
 
 ## License
 
-This script is provided under the [KTU License]0420221297D
+This script is provided under the [KTU License]0420221297D and 0420221201D
