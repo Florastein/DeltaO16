@@ -24,8 +24,8 @@ This Python script provides functionalities to encrypt files on a USB drive usin
 
 2. **Run the Script**
    - Open a terminal.
-   - Navigate to the directory containing the script (`usb_drive_manager.py`).
-   - Run the script using Python: `python deltaO16.py`.
+   - Navigate to the directory containing the script (`DeltaO16.py`).
+   - Run the script using Python: `python DeltaO16.py`.
 
 3. **Operations**
    - Follow the on-screen instructions to remove write protection, list files, encrypt/decrypt files, delete specific files, and serve files over HTTP.
