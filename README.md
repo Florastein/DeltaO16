@@ -14,6 +14,7 @@ This Python script provides functionalities to encrypt files on a USB drive usin
 
 - Python 3.x installed on your system.
 - `pycryptodome` library installed (`pip install pycryptodome`).
+- `pyusb` library installed (`pip install pyusb`)
 
 ## Usage
 
